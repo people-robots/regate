@@ -239,9 +239,7 @@
         <div class="figure-card">
           <img src="figures/pipeline.png" alt="REGATE method overview" class="paper-figure" />
           <p class="figure-caption">
-            Overview of ReGATE. The framework operates in two interconnected stages. 
-            (1) Reference Loss Generation (Left): A frozen, text-only teacher LLM processes the input text (with padding tokens) and computes a per-token reference loss (ref_loss), which measures how difficult each token is to predict from text alone. Higher loss values suggest the token likely requires visual grounding (e.g., "white", "red stripe"). 
-            (2) Student Training (Right): The ref_loss is combined with the student model’s historical learning difficulty to produce a unified importance score. This score is used to create a binary mask that selects the most informative tokens. During training, the student LLM receives the full multimodal input but only performs computation (e.g., self-attention and feed-forward operations) on the selected tokens, while skipping the rest.          
+            Overview of REGATE. A frozen text-only teacher provides per-token reference loss, which is combined with the student’s historical difficulty to gate token computation during training.
           </p>
         </div>
       </div>
