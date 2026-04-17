@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="REGATE: Learning Faster and Better with Fewer Tokens in MLLMs">
+  <meta name="keywords" content="REGATE, MLLM, token pruning, training efficiency, multimodal learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>REGATE: Learning Faster and Better with Fewer Tokens in MLLMs</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+
+  <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    .publication-title {
+      font-family: 'Google Sans', sans-serif;
+    }
+
+    .publication-subtitle {
+      margin-top: 0.5rem;
+    }
+
+    .hero.is-light {
+      background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+    }
+
+    .section-soft {
+      background: #fafafa;
+    }
+
+    .teaser-box {
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(10, 10, 10, 0.08);
+      padding: 1rem;
+      background: white;
+    }
+
+    .placeholder-figure {
+      width: 100%;
+      min-height: 280px;
+      border: 2px dashed #d0d0d0;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #777;
+      background: #fcfcfc;
+      padding: 2rem;
+    }
+
+    .result-card {
+      height: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(10, 10, 10, 0.06);
+    }
+
+    .metric {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .metric-label {
+      color: #666;
+      margin-top: 0.35rem;
+    }
+
+    .content p {
+      line-height: 1.75;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      border-radius: 12px;
+      padding: 1rem;
+      background: #f6f8fa;
+      font-size: 0.95rem;
+    }
+
+    .footer-note {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .table-container table {
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">REGATE</h1>
+          <h2 class="subtitle is-3 publication-subtitle">Learning Faster and Better with Fewer Tokens in MLLMs</h2>
+
+          <div class="is-size-5 publication-authors mt-4">
+            <span class="author-block"><a href="https://chaoyuli.com">Chaoyu Li</a><sup>1</sup>,</span>
+            <span class="author-block"><span>Yogesh Kulkarni</span><sup>1</sup>,</span>
+            <span class="author-block"><span>Pooyan Fazli</span><sup>1</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors mt-2">
+            <span class="author-block"><sup>1</sup>Arizona State University</span>
+          </div>
+
+          <div class="publication-links mt-5">
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span>arXiv</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#bibtex" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-quote-right"></i></span>
+                <span>BibTeX</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="teaser-box">
+      <div class="placeholder-figure">
+        Replace this box with your teaser figure<br>
+        Suggested asset: Figure 1 from the paper (token selection example / training overview)
+      </div>
+      <p class="has-text-centered mt-4">
+        REGATE dynamically identifies informative tokens during multimodal training and skips redundant ones,
+        reducing training cost without changing the model architecture.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            The computational cost of training multimodal large language models grows rapidly with the number of processed tokens.
+            Existing efficiency methods mainly focus on inference, leaving training cost largely unaddressed.
+            REGATE (Reference-Guided Adaptive Token Elision) is an adaptive token pruning framework for accelerating MLLM training.
+            It uses a teacher-student design in which a frozen text-only teacher provides per-token reference losses, and the student contributes an exponential moving average of token difficulty.
+            These two signals are fused to decide which tokens are most informative and should be kept in the forward and backward pass.
+            Across VideoChat2, VideoLLaMA2, and InternVL3.5, REGATE matches the peak accuracy of standard training on MVBench up to 2× faster while using only 38% of the tokens on average.
+            With longer training, it surpasses the baseline across multiple multimodal benchmarks while reducing total token usage by more than 41%.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container is-max-desktop">
+    <div class="columns">
+      <div class="column">
+        <h2 class="title is-3">Why This Matters</h2>
+        <div class="content">
+          <p>
+            Training MLLMs is expensive because self-attention scales poorly with long multimodal sequences, especially for video.
+            Most prior token compression methods reduce inference cost only, so the full token sequence is still processed during training.
+          </p>
+          <p>
+            REGATE targets the training bottleneck directly. Instead of using fixed heuristics, it adaptively prioritizes tokens that are still hard for the student or genuinely require visual grounding.
+          </p>
+        </div>
+      </div>
+      <div class="column">
+        <h2 class="title is-3">Core Idea</h2>
+        <div class="content">
+          <p>
+            For each target token, REGATE combines two signals:
+          </p>
+          <ul>
+            <li><strong>Reference loss:</strong> can a frozen text-only teacher predict this token from text alone?</li>
+            <li><strong>Student difficulty:</strong> has this token remained hard for the student across training?</li>
+          </ul>
+          <p>
+            Tokens with higher combined difficulty are kept active. Easier and less informative tokens are skipped, saving compute while preserving performance.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Method Overview</h2>
+    <div class="columns is-vcentered">
+      <div class="column is-7">
+        <div class="placeholder-figure">
+          Replace this box with your method figure<br>
+          Suggested asset: Figure 2 from the paper (teacher-student overview)
+        </div>
+      </div>
+      <div class="column is-5">
+        <div class="content">
+          <p><strong>Step 1.</strong> Build a frozen text-only teacher from the same LLM backbone by removing the visual encoder and projector.</p>
+          <p><strong>Step 2.</strong> Compute per-token reference loss by masking visual tokens and asking the teacher to predict each output token.</p>
+          <p><strong>Step 3.</strong> Maintain an EMA-based student difficulty score for each token during training.</p>
+          <p><strong>Step 4.</strong> Fuse the two scores, rank tokens by importance, and keep only the top subset during sparse phases.</p>
+          <p><strong>Step 5.</strong> Apply the resulting binary mask inside the transformer decoder so self-attention and MLP computation are performed only on active tokens.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Main Highlights</h2>
+    <div class="columns">
+      <div class="column">
+        <div class="card result-card">
+          <div class="card-content has-text-centered">
+            <div class="metric">2×</div>
+            <div class="metric-label">Faster to reach baseline peak accuracy on MVBench</div>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card result-card">
+          <div class="card-content has-text-centered">
+            <div class="metric">38%</div>
+            <div class="metric-label">Average token usage when matching baseline peak accuracy</div>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="card result-card">
+          <div class="card-content has-text-centered">
+            <div class="metric">41%+</div>
+            <div class="metric-label">Total token reduction while surpassing baseline performance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Results</h2>
+    <div class="content has-text-justified">
+      <p>
+        REGATE improves or matches performance across image, short-video, and long-video benchmarks while using substantially fewer tokens.
+        It works across different backbones and fine-tuning settings, including full fine-tuning and LoRA-based training.
+      </p>
+    </div>
+
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Tokens</th>
+            <th>Video-MME</th>
+            <th>MLVU</th>
+            <th>MVBench</th>
+            <th>Perception</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VideoChat2</td>
+            <td>3.93B</td>
+            <td>26.0</td>
+            <td>36.0</td>
+            <td>55.7</td>
+            <td>48.4</td>
+          </tr>
+          <tr>
+            <td><strong>VideoChat2-REGATE</strong></td>
+            <td><strong>2.22B</strong></td>
+            <td><strong>32.7</strong></td>
+            <td><strong>40.5</strong></td>
+            <td><strong>56.6</strong></td>
+            <td><strong>50.0</strong></td>
+          </tr>
+          <tr>
+            <td>VideoLLaMA2</td>
+            <td>83.82M</td>
+            <td>53.7</td>
+            <td>53.2</td>
+            <td>52.0</td>
+            <td>53.0</td>
+          </tr>
+          <tr>
+            <td><strong>VideoLLaMA2-REGATE</strong></td>
+            <td><strong>49.27M</strong></td>
+            <td><strong>54.5</strong></td>
+            <td><strong>54.5</strong></td>
+            <td><strong>53.6</strong></td>
+            <td><strong>54.1</strong></td>
+          </tr>
+          <tr>
+            <td>InternVL3.5</td>
+            <td>3.96B</td>
+            <td>62.4</td>
+            <td>63.7</td>
+            <td>68.3</td>
+            <td>65.3</td>
+          </tr>
+          <tr>
+            <td><strong>InternVL3.5-REGATE</strong></td>
+            <td><strong>2.32B</strong></td>
+            <td><strong>63.0</strong></td>
+            <td><strong>64.2</strong></td>
+            <td><strong>69.6</strong></td>
+            <td><strong>66.7</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Efficiency Comparison</h2>
+    <div class="table-container">
+      <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Tokens ↓</th>
+            <th>Teacher Cost (GPU-h) ↓</th>
+            <th>Train Time (GPU-h) ↓</th>
+            <th>Avg. Mem/GPU (GB) ↓</th>
+            <th>Avg. Acc. ↑</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VideoLLaMA2</td>
+            <td>83.82M</td>
+            <td>-</td>
+            <td>129.6</td>
+            <td>69.1</td>
+            <td>48.2</td>
+          </tr>
+          <tr>
+            <td><strong>VideoLLaMA2-REGATE</strong></td>
+            <td><strong>49.27M</strong></td>
+            <td>2.1</td>
+            <td><strong>107.6</strong></td>
+            <td><strong>61.3</strong></td>
+            <td><strong>48.9</strong></td>
+          </tr>
+          <tr>
+            <td>VideoChat2</td>
+            <td>3.93B</td>
+            <td>-</td>
+            <td>148.8</td>
+            <td>70.8</td>
+            <td>46.1</td>
+          </tr>
+          <tr>
+            <td><strong>VideoChat2-REGATE</strong></td>
+            <td><strong>2.22B</strong></td>
+            <td>10.0</td>
+            <td><strong>130.0</strong></td>
+            <td><strong>63.7</strong></td>
+            <td><strong>47.8</strong></td>
+          </tr>
+          <tr>
+            <td>InternVL3.5</td>
+            <td>3.96B</td>
+            <td>-</td>
+            <td>435.2</td>
+            <td>58.3</td>
+            <td>61.8</td>
+          </tr>
+          <tr>
+            <td><strong>InternVL3.5-REGATE</strong></td>
+            <td><strong>2.32B</strong></td>
+            <td>11.3</td>
+            <td><strong>374.4</strong></td>
+            <td><strong>51.9</strong></td>
+            <td><strong>62.2</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Qualitative Insight</h2>
+    <div class="columns is-vcentered">
+      <div class="column is-7">
+        <div class="placeholder-figure">
+          Replace this box with your qualitative figure<br>
+          Suggested assets: Figure 3 (accuracy vs tokens) and Figure 4 (attention maps)
+        </div>
+      </div>
+      <div class="column is-5">
+        <div class="content">
+          <p>
+            Beyond efficiency numbers, REGATE also changes what the model focuses on.
+            The paper shows that REGATE pays more attention to contextually relevant regions such as hands and manipulated objects,
+            while standard fine-tuning tends to spread attention more broadly across the background.
+          </p>
+          <p>
+            This suggests that the token gating strategy is not only saving compute, but also helping training concentrate on more useful multimodal evidence.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="bibtex">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3 has-text-centered">BibTeX</h2>
+<pre><code>@article{li2026regate,
+  title   = {REGATE: Learning Faster and Better with Fewer Tokens in MLLMs},
+  author  = {Li, Chaoyu and Kulkarni, Yogesh and Fazli, Pooyan},
+  journal = {ACL 2026},
+  year    = {2026}
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p class="footer-note">
+      This page is adapted from a standard academic project-page layout inspired by Nerfies-style templates.
+      Update the button links and replace the figure placeholders with your actual assets before deployment.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
