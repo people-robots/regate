@@ -2,10 +2,10 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="description" content="REGATE: Learning Faster and Better with Fewer Tokens in MLLMs">
-  <meta name="keywords" content="REGATE, MLLM, token pruning, training efficiency, multimodal learning">
+  <meta name="description" content="ReGATE: Learning Faster and Better with Fewer Tokens in MLLMs">
+  <meta name="keywords" content="ReGATE, MLLM, token pruning, training efficiency, multimodal learning">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>REGATE: Learning Faster and Better with Fewer Tokens in MLLMs</title>
+  <title>ReGATE: Learning Faster and Better with Fewer Tokens in MLLMs</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -120,8 +120,11 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">REGATE</h1>
+          <h1 class="title is-1 publication-title">ReGATE</h1>
           <h2 class="subtitle is-3 publication-subtitle">Learning Faster and Better with Fewer Tokens in MLLMs</h2>
+          <p class="is-size-3 has-text-weight-semibold" style="margin-top: 1.25rem; margin-bottom: 1.5rem; color: #777;">
+            ACL 2026
+          </p>
 
           <div class="is-size-5 publication-authors mt-4">
             <span class="author-block"><a href="https://chaoyuli.com">Chaoyu Li</a><sup>1</sup>,</span>
@@ -162,9 +165,9 @@
 <section class="section">
   <div class="container is-max-desktop" style="max-width: 680px;">
     <div class="teaser-box">
-      <img src="figures/teaser.png" alt="REGATE teaser figure" class="paper-figure" />
+      <img src="figures/teaser.png" alt="ReGATE teaser figure" class="paper-figure" />
       <p class="has-text-centered mt-4">
-        In training MLLMs, REGATE identifies important textual tokens and selectively propagates them, while skipping unimportant ones to reduce training cost.
+        In training MLLMs, ReGATE identifies important textual tokens and selectively propagates them, while skipping unimportant ones to reduce training cost.
       </p>
     </div>
   </div>
@@ -179,10 +182,10 @@
           <p>
             The computational cost of training multimodal large language models grows rapidly with the number of processed tokens.
             Existing efficiency methods mainly focus on inference, leaving training cost largely unaddressed.
-            REGATE (Reference-Guided Adaptive Token Elision) is an adaptive token pruning framework for accelerating MLLM training.
+            ReGATE (Reference-Guided Adaptive Token Elision) is an adaptive token pruning framework for accelerating MLLM training.
             It uses a teacher-student design in which a frozen text-only teacher provides per-token reference losses, and the student contributes an exponential moving average of token difficulty.
             These two signals are fused to decide which tokens are most informative and should be kept in the forward and backward pass.
-            Across VideoChat2, VideoLLaMA2, and InternVL3.5, REGATE matches the peak accuracy of standard training on MVBench up to 2× faster while using only 38% of the tokens on average.
+            Across VideoChat2, VideoLLaMA2, and InternVL3.5, ReGATE matches the peak accuracy of standard training on MVBench up to 2× faster while using only 38% of the tokens on average.
             With longer training, it surpasses the baseline across multiple multimodal benchmarks while reducing total token usage by more than 41%.
           </p>
         </div>
@@ -202,7 +205,7 @@
             Most prior token compression methods reduce inference cost only, so the full token sequence is still processed during training.
           </p>
           <p>
-            REGATE targets the training bottleneck directly. Instead of using fixed heuristics, it adaptively prioritizes tokens that are still hard for the student or genuinely require visual grounding.
+            ReGATE targets the training bottleneck directly. Instead of using fixed heuristics, it adaptively prioritizes tokens that are still hard for the student or genuinely require visual grounding.
           </p>
         </div>
       </div>
@@ -210,7 +213,7 @@
         <h2 class="title is-3">Core Idea</h2>
         <div class="content">
           <p>
-            For each target token, REGATE combines two signals:
+            For each target token, ReGATE combines two signals:
           </p>
           <ul>
             <li><strong>Reference loss:</strong> can a frozen text-only teacher predict this token from text alone?</li>
@@ -231,9 +234,9 @@
     <div class="columns is-vcentered">
       <div class="column is-7">
         <div class="figure-card">
-          <img src="figures/pipeline.png" alt="REGATE method overview" class="paper-figure" />
+          <img src="figures/pipeline.png" alt="ReGATE method overview" class="paper-figure" />
           <p class="figure-caption">
-            Overview of REGATE. A frozen text-only teacher provides per-token reference loss, which is combined with the student’s historical difficulty to gate token computation during training.
+            Overview of ReGATE. A frozen text-only teacher provides per-token reference loss, which is combined with the student’s historical difficulty to gate token computation during training.
           </p>
         </div>
       </div>
@@ -287,7 +290,7 @@
     <h2 class="title is-3 has-text-centered">Results</h2>
     <div class="content has-text-justified">
       <p>
-        REGATE improves or matches performance across image, short-video, and long-video benchmarks while using substantially fewer tokens.
+        ReGATE improves or matches performance across image, short-video, and long-video benchmarks while using substantially fewer tokens.
         It works across different backbones and fine-tuning settings, including full fine-tuning and LoRA-based training.
       </p>
     </div>
@@ -314,7 +317,7 @@
             <td>48.4</td>
           </tr>
           <tr>
-            <td><strong>VideoChat2-REGATE</strong></td>
+            <td><strong>VideoChat2-ReGATE</strong></td>
             <td><strong>2.22B</strong></td>
             <td><strong>32.7</strong></td>
             <td><strong>40.5</strong></td>
@@ -330,7 +333,7 @@
             <td>53.0</td>
           </tr>
           <tr>
-            <td><strong>VideoLLaMA2-REGATE</strong></td>
+            <td><strong>VideoLLaMA2-ReGATE</strong></td>
             <td><strong>49.27M</strong></td>
             <td><strong>54.5</strong></td>
             <td><strong>54.5</strong></td>
@@ -346,7 +349,7 @@
             <td>65.3</td>
           </tr>
           <tr>
-            <td><strong>InternVL3.5-REGATE</strong></td>
+            <td><strong>InternVL3.5-ReGATE</strong></td>
             <td><strong>2.32B</strong></td>
             <td><strong>63.0</strong></td>
             <td><strong>64.2</strong></td>
@@ -358,9 +361,9 @@
     </div>
 
     <div class="figure-card mt-6">
-      <img src="figures/curve.png" alt="REGATE training efficiency curves" class="paper-figure" />
+      <img src="figures/curve.png" alt="ReGATE training efficiency curves" class="paper-figure" />
       <p class="figure-caption">
-        Training efficiency curves for REGATE versus standard fine-tuning. REGATE reaches competitive accuracy with substantially fewer processed tokens and less training time.
+        Training efficiency curves for ReGATE versus standard fine-tuning. ReGATE reaches competitive accuracy with substantially fewer processed tokens and less training time.
       </p>
     </div>
   </div>
@@ -391,7 +394,7 @@
             <td>48.2</td>
           </tr>
           <tr>
-            <td><strong>VideoLLaMA2-REGATE</strong></td>
+            <td><strong>VideoLLaMA2-ReGATE</strong></td>
             <td><strong>49.27M</strong></td>
             <td>2.1</td>
             <td><strong>107.6</strong></td>
@@ -407,7 +410,7 @@
             <td>46.1</td>
           </tr>
           <tr>
-            <td><strong>VideoChat2-REGATE</strong></td>
+            <td><strong>VideoChat2-ReGATE</strong></td>
             <td><strong>2.22B</strong></td>
             <td>10.0</td>
             <td><strong>130.0</strong></td>
@@ -423,7 +426,7 @@
             <td>61.8</td>
           </tr>
           <tr>
-            <td><strong>InternVL3.5-REGATE</strong></td>
+            <td><strong>InternVL3.5-ReGATE</strong></td>
             <td><strong>2.32B</strong></td>
             <td>11.3</td>
             <td><strong>374.4</strong></td>
@@ -439,8 +442,8 @@
 <section class="section" id="bibtex">
   <div class="container is-max-desktop content">
     <h2 class="title is-3 has-text-centered">BibTeX</h2>
-<pre><code>@article{li2025regate,
-  title   = {REGATE: Learning Faster and Better with Fewer Tokens in MLLMs},
+<pre><code>@article{li2025ReGATE,
+  title   = {ReGATE: Learning Faster and Better with Fewer Tokens in MLLMs},
   author  = {Li, Chaoyu and Kulkarni, Yogesh and Fazli, Pooyan},
   journal = {arXiv preprint arXiv:2507.21420},
   year    = {2025}
